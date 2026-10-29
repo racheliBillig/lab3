@@ -37,6 +37,9 @@ class CoinDash extends Phaser.Scene {
     const c = COIN_DASH;
     this.score = 0;
     this.finished = false;
+    this.paused = false;
+    document.getElementById('pause-overlay').hidden = true;
+    this.physics.resume();
     this.deadline = this.time.now + c.roundSeconds * 1000;
     this.physics.world.setBounds(0, 44, c.width, c.height - 44);
     this.drawBackground();
@@ -73,11 +76,47 @@ class CoinDash extends Phaser.Scene {
     this.keys = this.input.keyboard.addKeys('W,A,S,D,R');
     this.input.keyboard.on('keydown-R', openMenu);
     this.input.keyboard.on('keydown-ESC', openMenu);
+    // A DOM listener still receives P while the Phaser scene is paused.
+    const pauseKey = event => {
+      if (event.code !== 'KeyP' || event.repeat || event.ctrlKey || event.metaKey || event.altKey) return;
+      if (menuOpen || this.finished) return;
+      event.preventDefault();
+      this.togglePause();
+    };
+    window.addEventListener('keydown', pauseKey);
+    this.events.once('shutdown', () => {
+      window.removeEventListener('keydown', pauseKey);
+      this.input.keyboard.off('keydown-R', openMenu);
+      this.input.keyboard.off('keydown-ESC', openMenu);
+      this.events.off('preupdate', this.resumeCountdown, this);
+    });
     this.input.keyboard.enabled = !menuOpen;
     if (menuOpen) {
       this.input.keyboard.removeCapture(['UP', 'DOWN', 'LEFT', 'RIGHT', 'SPACE']);
       this.scene.pause();
     }
+  }
+
+  togglePause() {
+    this.paused = !this.paused;
+    document.getElementById('pause-overlay').hidden = !this.paused;
+    document.getElementById('pause-status').textContent = this.paused
+      ? 'Paused · Press P to resume' : 'Pause / resume: P';
+    if (this.paused) {
+      this.remainingTime = this.deadline - this.time.now;
+      this.scene.pause();
+    } else {
+      // The scene clock jumps to the current game time on the first resumed
+      // frame. Use that frame’s timestamp to preserve the remaining duration.
+      this.events.once('preupdate', this.resumeCountdown, this);
+      this.input.keyboard.resetKeys();
+      this.player.body.setVelocity(0, 0);
+      this.scene.resume();
+    }
+  }
+
+  resumeCountdown(time) {
+    this.deadline = time + this.remainingTime;
   }
 
   drawBackground() {
@@ -147,6 +186,8 @@ window.coinDashGame = new Phaser.Game({
 
 function openMenu() {
   menuOpen = true;
+  document.getElementById('pause-overlay').hidden = true;
+  document.getElementById('pause-status').textContent = 'Pause / resume: P';
   const keyboard = window.coinDashGame.scene.getScene('CoinDash').input.keyboard;
   keyboard.enabled = false;
   keyboard.removeCapture(['UP', 'DOWN', 'LEFT', 'RIGHT', 'SPACE']);
