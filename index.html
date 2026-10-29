@@ -2,15 +2,31 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Coin Dash — Lab 3 starter</title>
+<title>Coin Dash</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main>
-  <header><p>LAB 3 · STARTER GAME</p><h1>Coin Dash</h1>
-  <p>Collect yellow coins. Dodge red drones. How many can you collect in 45 seconds?</p></header>
-  <div id="game" aria-label="Coin Dash game. Move with arrow keys or WASD."></div>
-  <p>Move: <strong>arrow keys / WASD</strong> · Restart: <strong>R</strong></p>
+  <header><p>THE COSMIC COIN CHASE</p><h1>Coin Dash<span>✦</span></h1>
+  <p>Collect gold. Dodge drones. Make every second count.</p></header>
+  <div class="arena">
+    <div id="game" aria-label="Coin Dash game. Move with arrow keys or WASD."></div>
+    <section id="opening" aria-labelledby="opening-title">
+      <p class="eyebrow">YOUR NEXT ADVENTURE</p>
+      <h2 id="opening-title">Small explorer.<br>Big payday.</h2>
+      <p>You have 45 seconds. How much gold can you bring home?</p>
+      <fieldset><legend>CHOOSE YOUR EXPLORER</legend>
+        <div class="characters">
+          <label><input type="radio" name="character" value="scout" checked><span class="card"><canvas width="64" height="64" data-character="scout" aria-hidden="true"></canvas><strong>Scout</strong><small>The astronaut</small></span></label>
+          <label><input type="radio" name="character" value="robot"><span class="card"><canvas width="64" height="64" data-character="robot" aria-hidden="true"></canvas><strong>Byte</strong><small>The robot</small></span></label>
+          <label><input type="radio" name="character" value="fox"><span class="card"><canvas width="64" height="64" data-character="fox" aria-hidden="true"></canvas><strong>Ember</strong><small>The space fox</small></span></label>
+        </div>
+      </fieldset>
+      <button id="start" type="button">Let’s dash <span>→</span></button>
+      <p class="menu-hint">WASD / ARROWS TO MOVE · DODGE THE RED DRONES</p>
+    </section>
+  </div>
+  <footer><span>Move <strong>WASD / ↑ ↓ ← →</strong></span><span>Restart <strong>R</strong></span><button id="menu" type="button" hidden>Change explorer · Esc</button></footer>
 </main>
 <script src="vendor/phaser-3.90.0.min.js"></script>
 <script src="settings.js"></script><script src="game.js"></script>
