@@ -6,6 +6,7 @@ window.COIN_DASH = {
   playerSpeed: 240,
   droneSpeed: 105,
   droneCount: 3,
+  timedCoins: { startAfterSeconds: 10, minSeconds: 3, maxSeconds: 4, spawnEverySeconds: 1.5, maxOnBoard: 3 },
   speedCoin: { spawnEverySeconds: 6, lifetimeSeconds: 4, boostSeconds: 5, boostMultiplier: 1.5 },
   rageSeconds: 6,
   rageScale: 3,

@@ -54,11 +54,11 @@ class CoinDash extends Phaser.Scene {
     this.player = this.add.image(c.width / 2, c.height / 2, textureKey).setDisplaySize(40, 40);
     this.physics.add.existing(this.player);
     this.player.body.setSize(36, 46).setOffset(14, 12).setCollideWorldBounds(true);
-    this.coin = this.add.circle(100, 100, 9, c.colors.coin);
-    this.physics.add.existing(this.coin);
-    this.coin.body.setCircle(9);
+    this.startTime = this.time.now;
+    this.nextSpawnAt = 0;
+    this.coins = this.physics.add.group();
     this.createSpeedCoin();
-    this.placeCoin();
+    this.spawnCoin(false);
     this.enraged = false;
     this.hazard = this.add.rectangle(0, 0, 18, 18, c.colors.hazard).setAngle(45);
     this.physics.add.existing(this.hazard);
@@ -71,10 +71,12 @@ class CoinDash extends Phaser.Scene {
       const angle = (35 + i * 105) * Math.PI / 180;
       drone.body.setVelocity(Math.cos(angle) * c.droneSpeed, Math.sin(angle) * c.droneSpeed);
     }
-    this.physics.add.overlap(this.player, this.coin, () => {
-      if (this.finished) return;
+    this.physics.add.overlap(this.player, this.coins, (player, coin) => {
+      if (this.finished || !coin.active) return;
       this.score++;
-      this.placeCoin();
+      this.removeCoin(coin);
+      // Before timed coins start, keep a single permanent coin on the board.
+      if (!this.timedPhase()) this.spawnCoin(false);
     });
     this.physics.add.overlap(this.player, this.hazard, () => {
       if (this.finished || this.enraged) return;
@@ -134,6 +136,11 @@ class CoinDash extends Phaser.Scene {
   resumeCountdown(time) {
     const pausedDuration = time - this.pauseStartedAt;
     if (this.boostUntil > 0) this.boostUntil += pausedDuration;
+    this.startTime += pausedDuration;
+    if (this.nextSpawnAt > 0) this.nextSpawnAt += pausedDuration;
+    for (const coin of this.coins.getChildren()) {
+      if (coin.expireAt) coin.expireAt += pausedDuration;
+    }
     this.deadline = time + this.remainingTime;
   }
 
@@ -180,7 +187,7 @@ class CoinDash extends Phaser.Scene {
 
   spawnSpeedCoin() {
     if (this.finished || this.speedCoin.visible) return;
-    const { x, y } = this.randomSpot([this.player, this.coin]);
+    const { x, y } = this.randomSpot();
     for (const part of [this.speedGlow, this.speedCoin, this.speedBolt]) {
       part.setPosition(x, y).setVisible(true);
     }
@@ -199,7 +206,9 @@ class CoinDash extends Phaser.Scene {
 
   randomSpot(avoid = [this.player]) {
     const c = COIN_DASH;
-    // Avoid spawning pickups directly underneath the player.
+    // Keep pickups away from the explorer and all other visible pickups.
+    avoid = [...avoid, ...this.coins.getChildren(), this.speedCoin, this.hazard]
+      .filter(object => object && object.visible !== false);
     let x, y;
     do {
       x = Phaser.Math.Between(25, c.width - 25);
@@ -208,11 +217,45 @@ class CoinDash extends Phaser.Scene {
     return { x, y };
   }
 
-  placeCoin() {
-    const avoid = this.speedCoin.visible ? [this.player, this.speedCoin] : [this.player];
-    const { x, y } = this.randomSpot(avoid);
-    this.coin.setPosition(x, y);
-    this.coin.body.reset(x, y);
+  timedPhase() {
+    return this.time.now - this.startTime >= COIN_DASH.timedCoins.startAfterSeconds * 1000;
+  }
+
+  pickCoinPosition() {
+    return this.randomSpot();
+  }
+
+  spawnCoin(timed) {
+    const c = COIN_DASH;
+    const { x, y } = this.pickCoinPosition();
+    const coin = this.add.circle(x, y, 9, c.colors.coin);
+    this.coins.add(coin);
+    coin.body.setCircle(9);
+    if (timed) {
+      const t = c.timedCoins;
+      coin.expireAt = this.time.now + Phaser.Math.Between(t.minSeconds * 1000, t.maxSeconds * 1000);
+      coin.label = this.add.text(x, y - 20, '', { font: '14px monospace', color: '#ffffff' }).setOrigin(0.5);
+    }
+  }
+
+  removeCoin(coin) {
+    if (coin.label) coin.label.destroy();
+    coin.destroy();
+  }
+
+  updateTimedCoins() {
+    const t = COIN_DASH.timedCoins;
+    const now = this.time.now;
+    if (this.timedPhase() && now >= this.nextSpawnAt && this.coins.countActive() < t.maxOnBoard) {
+      this.spawnCoin(true);
+      this.nextSpawnAt = now + t.spawnEverySeconds * 1000;
+    }
+    for (const coin of this.coins.getChildren().slice()) {
+      if (!coin.expireAt) continue;
+      const remaining = Math.ceil((coin.expireAt - now) / 1000);
+      if (remaining <= 0) this.removeCoin(coin);
+      else coin.label.setText(String(remaining));
+    }
   }
 
   placeHazard() {
@@ -270,6 +313,7 @@ class CoinDash extends Phaser.Scene {
     const speed = c.playerSpeed * (boosted ? c.speedCoin.boostMultiplier : 1);
     const direction = new Phaser.Math.Vector2(dx, dy).normalize().scale(speed);
     this.player.body.setVelocity(direction.x, direction.y);
+    this.updateTimedCoins();
     if (boosted) this.player.setTint(c.colors.speedCoin);
     else this.player.clearTint();
     const seconds = Math.max(0, Math.ceil((this.deadline - this.time.now) / 1000));

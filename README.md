@@ -15,6 +15,13 @@ there is no package to install, no build step, no backend, and nothing is fetche
 If your agent prefers a local server, let it serve this folder, for example with
 `python3 -m http.server 8000`, and open `http://localhost:8000`.
 
+## Pickups and hazards
+
+Yellow coins add to your score. After 10 seconds, extra coins appear with a
+3–4 second countdown. Cyan lightning coins grant a five-second speed boost.
+Avoid purple diamonds: they make drones grow to three times their size for
+six seconds. Press **P** to pause or resume; countdowns and boosts freeze too.
+
 ## Background music
 
 Click the speaker icon above the game to play **Disco Dash**, an upbeat loop with
