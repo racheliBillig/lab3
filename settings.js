@@ -7,7 +7,7 @@ window.COIN_DASH = {
   droneSpeed: 105,
   droneCount: 3,
   rageSeconds: 6,
-  rageScale: 1.5,
+  rageScale: 2,
   ragePulse: 0.08,
   hazardRespawnSeconds: 3,
   colors: {
