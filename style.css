@@ -27,5 +27,16 @@ button { cursor: pointer; font: inherit; }
 #start:hover { background: #ffe29c; } #start span { margin-left: 40px; }
 #opening .menu-hint { font-size: 9px !important; letter-spacing: .1em; }
 footer { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-top: 18px; color: #8796af; font-size: 12px; }
-footer strong { color: #c7d1e1; margin-left: 6px; } #menu { margin-left: auto; background: transparent; border: 1px solid #44516b; border-radius: 6px; color: #c7d1e1; padding: 6px 12px; }
+footer strong { color: #c7d1e1; margin-left: 6px; } #menu { margin-left: auto; } #menu, #restart { background: transparent; border: 1px solid #44516b; border-radius: 6px; color: #c7d1e1; padding: 6px 12px; }
 @media (max-width: 600px) { main { padding: 0 12px; margin: 18px auto; } .arena { min-height: 490px; } #opening { padding: 14px; } .card { width: 94px; } .characters { gap: 8px; } }
+
+#music-toggle {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; margin: 16px 0 12px auto;
+  border: 1px solid #526781; border-radius: 50%; background: #17263d; color: #aab7cd;
+}
+#music-toggle:hover:enabled { background: #293f5b; }
+#music-toggle[aria-pressed="true"] { color: #71e8ce; border-color: #71e8ce; }
+#music-toggle[aria-pressed="false"] .sound-on,
+#music-toggle[aria-pressed="true"] .sound-off { display: none; }
+#music-toggle:disabled { opacity: .5; cursor: default; }

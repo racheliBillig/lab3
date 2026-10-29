@@ -9,6 +9,13 @@
 <main>
   <header><p>THE COSMIC COIN CHASE</p><h1>Coin Dash<span>✦</span></h1>
   <p>Collect gold. Dodge drones. Make every second count.</p></header>
+  <button id="music-toggle" type="button" aria-label="Play music" aria-pressed="false" title="Play music">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M11 5 6 9H3v6h3l5 4Z" />
+      <g class="sound-on"><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14" /></g>
+      <g class="sound-off"><path d="m16 9 5 6m0-6-5 6" /></g>
+    </svg>
+  </button>
   <div class="arena">
     <div id="game" aria-label="Coin Dash game. Move with arrow keys or WASD."></div>
     <section id="opening" aria-labelledby="opening-title">
@@ -26,9 +33,10 @@
       <p class="menu-hint">WASD / ARROWS TO MOVE · DODGE THE RED DRONES</p>
     </section>
   </div>
-  <footer><span>Move <strong>WASD / ↑ ↓ ← →</strong></span><span>Restart <strong>R</strong></span><button id="menu" type="button" hidden>Change explorer · Esc</button></footer>
+  <footer><span>Move <strong>WASD / ↑ ↓ ← →</strong></span><button id="restart" type="button" hidden>Restart · R</button><button id="menu" type="button" hidden>Change explorer · Esc</button></footer>
 </main>
 <script src="vendor/phaser-3.90.0.min.js"></script>
+<script src="music.js"></script>
 <script src="settings.js"></script><script src="game.js"></script>
 </body>
 </html>

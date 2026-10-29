@@ -37,6 +37,7 @@ class CoinDash extends Phaser.Scene {
     const c = COIN_DASH;
     this.score = 0;
     this.finished = false;
+    this.physics.resume();
     this.deadline = this.time.now + c.roundSeconds * 1000;
     this.physics.world.setBounds(0, 44, c.width, c.height - 44);
     this.drawBackground();
@@ -73,6 +74,10 @@ class CoinDash extends Phaser.Scene {
     this.keys = this.input.keyboard.addKeys('W,A,S,D,R');
     this.input.keyboard.on('keydown-R', openMenu);
     this.input.keyboard.on('keydown-ESC', openMenu);
+    this.events.once('shutdown', () => {
+      this.input.keyboard.off('keydown-R', openMenu);
+      this.input.keyboard.off('keydown-ESC', openMenu);
+    });
     this.input.keyboard.enabled = !menuOpen;
     if (menuOpen) {
       this.input.keyboard.removeCapture(['UP', 'DOWN', 'LEFT', 'RIGHT', 'SPACE']);
@@ -153,6 +158,7 @@ function openMenu() {
   window.coinDashGame.scene.pause('CoinDash');
   document.getElementById('opening').hidden = false;
   document.getElementById('menu').hidden = true;
+  document.getElementById('restart').hidden = true;
   document.querySelector('input[name="character"]:checked').focus();
 }
 
@@ -161,7 +167,10 @@ document.getElementById('start').addEventListener('click', () => {
   menuOpen = false;
   document.getElementById('opening').hidden = true;
   document.getElementById('menu').hidden = false;
+  document.getElementById('restart').hidden = false;
   window.coinDashGame.scene.start('CoinDash');
   document.activeElement.blur();
 });
 document.getElementById('menu').addEventListener('click', openMenu);
+
+document.getElementById('restart').addEventListener('click', openMenu);

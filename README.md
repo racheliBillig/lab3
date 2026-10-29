@@ -14,6 +14,13 @@ there is no package to install, no build step, no backend, and nothing is fetche
 If your agent prefers a local server, let it serve this folder, for example with
 `python3 -m http.server 8000`, and open `http://localhost:8000`.
 
+## Background music
+
+Click the speaker icon above the game to play **Disco Dash**, an upbeat loop with
+pulsing bass and synthesized drums. Click it again to mute. Music starts off and
+keeps looping across rounds until muted. The original melody is synthesized
+locally with Web Audio and works offline without audio downloads.
+
 ## Use it in the lab
 
 This is a template repository. One partner creates the pair's own repository from it
@@ -39,6 +46,7 @@ laptops' JSON files together and save the combined HTML. Use the same time windo
 - `index.html`: page and script loading.
 - `style.css`: page appearance.
 - `settings.js`: round duration, speeds, colours and dimensions.
+- `music.js`: Disco Dash synthesis and accessible play and mute controls.
 - `game.js`: scene, input, collisions, score and end-of-round behaviour.
 - `vendor/phaser-3.90.0.min.js`: the pinned Phaser runtime, byte for byte the file published at
   `https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js`; `vendor/LICENSE.phaser.txt` is its MIT licence.
