@@ -71,7 +71,7 @@ class CoinDash extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.drones, () => this.finish('A drone caught you!'));
     this.cursors = this.input.keyboard.createCursorKeys();
     this.keys = this.input.keyboard.addKeys('W,A,S,D,R');
-    this.input.keyboard.on('keydown-R', () => { if (!menuOpen) this.scene.restart(); });
+    this.input.keyboard.on('keydown-R', openMenu);
     this.input.keyboard.on('keydown-ESC', openMenu);
     this.input.keyboard.enabled = !menuOpen;
     if (menuOpen) {
@@ -129,7 +129,7 @@ class CoinDash extends Phaser.Scene {
     const c = COIN_DASH;
     this.add.rectangle(c.width / 2, c.height / 2, 460, 150, 0x0a1120, 0.95);
     this.add.text(c.width / 2, c.height / 2,
-      `${reason}\n${this.score} coins collected\nR: try again · Esc: change explorer`,
+      `${reason}\n${this.score} coins collected\nR / Esc: back to opening screen`,
       { font: '20px monospace', color: '#ffffff', align: 'center', lineSpacing: 12 }
     ).setOrigin(0.5);
   }

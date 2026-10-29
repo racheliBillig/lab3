@@ -1,7 +1,7 @@
 # Coin Dash — Lab 3 starter
 
 Collect coins, avoid drones, and survive a 45-second round. Move with arrow keys or WASD;
-press R to restart. Choose Scout the astronaut, Byte the robot, or Ember the space fox
+press R to return to the opening screen and restart. Choose Scout the astronaut, Byte the robot, or Ember the space fox
 on the opening screen, then select **Let’s dash** to start the timer. Press Esc or
 click **Change explorer** to return to character selection and begin a fresh round. This is deliberately small so you can add features during the lab.
 
